@@ -1,0 +1,38 @@
+services:
+  warehouse_postgres:
+    container_name: warehouse
+    image: postgres:17
+    environment:
+      POSTGRES_USER: warehouse
+      POSTGRES_PASSWORD: warehouse
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/projects/warehouse/server/docker-volumes/postgres
+    ports:
+      - 127.0.0.1:5432:5432
+    networks:
+      - warehouse
+    restart: unless-stopped
+
+  warehouse_pgadmin:
+    container_name: warehouse_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: warehouset@admin.com
+      PGADMIN_DEFAULT_PASSWORD: warehouse
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/projects/warehouse/server/docker-volumes/pgadmin
+    ports:
+      - 127.0.0.1:5050:80
+    networks:
+      - warehouse
+    restart: unless-stopped
+
+networks:
+  warehouse:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
