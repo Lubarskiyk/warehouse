@@ -30,8 +30,10 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(email: string) {
+    const existUser = await this.userRepository.findOne({ where: { email } });
+    if (!existUser) throw new BadRequestException('User not found');
+    return existUser;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

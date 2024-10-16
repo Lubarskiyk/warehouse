@@ -21,9 +21,9 @@ export class UserRole {
   @Column()
   get: boolean;
 
-  @ManyToOne(() => User, (users) => users.role, { nullable: true })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  // @ManyToOne(() => User, (users) => users.role, { nullable: true })
+  // @JoinColumn({ name: 'user_id' })
+  // user: User;
 
   @CreateDateColumn()
   createdAt: Date;

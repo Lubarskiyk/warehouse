@@ -27,9 +27,12 @@ export class User {
   @Column({ type: 'varchar' })
   password: string;
 
-  @OneToOne(() => UserRole, (role) => role.user, { nullable: true })
-  @JoinColumn({ name: 'role_id' })
-  role: UserRole;
+  @Column({ type: 'varchar', nullable: true })
+  refreshToken: string;
+
+  // @OneToOne(() => UserRole, (role) => role.user, { nullable: true })
+  // @JoinColumn({ name: 'role_id' })
+  // role: UserRole;
 
   @CreateDateColumn()
   createdAt: Date;
