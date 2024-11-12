@@ -17,10 +17,10 @@ export class ProductArticle {
   @Column()
   articleName: string;
 
-  @Column({ default: 0 })
+  @Column({ default: 1 })
   countOne: number;
 
-  @Column('real', { default: 0 })
+  @Column('real', { default: 0.001 })
   normOne: number;
 
   @Column({ default: 0 })
@@ -40,6 +40,12 @@ export class ProductArticle {
 
   @Column('real', { default: 0 })
   normFour: number;
+
+  @Column('varchar', { default: 'new', length: 12, nullable: true })
+  storageLocation: string;
+
+  @Column('varchar', { length: 50, nullable: true, default: '' })
+  comment: string;
 
   @CreateDateColumn()
   createdAt: Date;
