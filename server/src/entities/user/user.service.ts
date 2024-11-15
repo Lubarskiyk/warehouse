@@ -1,46 +1,39 @@
-import * as argon2 from 'argon2';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@entities/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma.service';
+import { hash } from 'argon2';
+import { AuthDto } from '@entities/auth/dto/auth.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const existUser = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
+  async getById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        warehouses: true,
+      },
     });
-    if (existUser) throw new BadRequestException('User already exists');
-    const hashPassword = await argon2.hash(createUserDto.password);
-    const newUser: User = this.userRepository.create({
-      ...createUserDto,
-      password: hashPassword,
+    return user;
+  }
+
+  async getByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      include: {
+        warehouses: true,
+      },
     });
-    const user = await this.userRepository.save(newUser);
-    return { status: 'ok', user: user };
+    return user;
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  async findOne(email: string) {
-    const existUser = await this.userRepository.findOne({ where: { email } });
-    if (!existUser) throw new BadRequestException('User not found');
-    return existUser;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async create(dto: AuthDto) {
+    return await this.prisma.user.create({
+      data: {
+        name: dto.name,
+        email: dto.email,
+        password: await hash(dto.password),
+      },
+    });
   }
 }

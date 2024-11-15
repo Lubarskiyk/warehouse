@@ -1,3 +1,5 @@
 export default function Home() {
-  return <h1>Hello Word</h1>;
+  return (
+    <p className="aspect-video h-12 w-full rounded-lg bg-muted/50">Hello</p>
+  );
 }

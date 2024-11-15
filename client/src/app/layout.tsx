@@ -1,19 +1,16 @@
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { ReactNode } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
-import { cookies } from "next/headers";
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
   return (
-    <html lang="en">
+    <html suppressHydrationWarning lang="en">
       <body>
         <ThemeProvider
           attribute="class"
@@ -21,12 +18,9 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider defaultOpen={defaultOpen}>
+          <SidebarProvider>
             <AppSidebar />
-            <main>
-              <SidebarTrigger />
-              {children}
-            </main>
+            {children}
           </SidebarProvider>
         </ThemeProvider>
       </body>

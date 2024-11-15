@@ -1,20 +1,9 @@
 import { Module } from '@nestjs/common';
-
-import { UserModule } from '@entities/user/user.module';
-import { ProductArticleModule } from '@entities/product-article/product-article.module';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '@entities/auth/auth.module';
-import { UserRoleModule } from '@entities/user-role/user-role.module';
-import { ConfigModule } from './config.module';
-import { TypeOrmModule } from '@db/typeorm.module';
+import { UserModule } from '@entities/user/user.module';
 
 @Module({
-  imports: [
-    ConfigModule,
-    UserModule,
-    ProductArticleModule,
-    AuthModule,
-    UserRoleModule,
-    TypeOrmModule,
-  ],
+  imports: [ConfigModule.forRoot(), AuthModule, UserModule],
 })
 export class AppModule {}

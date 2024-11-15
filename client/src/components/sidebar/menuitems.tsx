@@ -17,17 +17,17 @@ export const sidebarItems: {
 }[] = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: "Product",
+    url: "/products",
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
+    title: "Users",
+    url: "/users",
     icon: Calendar,
   },
   {
