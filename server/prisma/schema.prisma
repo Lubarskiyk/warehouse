@@ -12,14 +12,22 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  email    String @unique
+  email    String   @unique
   password String
+  role     UserRole @default(ADMIN)
 
   name String @default("Відсутне")
 
   warehouses Warehouse[]
 
   @@map("user")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+  NOTACTIV
 }
 
 model Warehouse {
@@ -42,12 +50,90 @@ model Product {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  artical         Int    @unique
+  artical         Int           @unique
   description     String
-  storageLocation String @map("storage_location")
+  storageLocation String        @map("storage_location")
+  type            String
+  normCount1      Int           @default(1) @map("norm_count_1")
+  norm1           Decimal       @default(0.001) @map("norm_1")
+  normCount2      Int           @default(0) @map("norm_count_2")
+  norm2           Decimal       @default(0) @map("norm_2")
+  normCount3      Int           @default(0) @map("norm_count_3")
+  norm3           Decimal       @default(0) @map("norm_3")
+  normCount4      Int           @default(0) @map("norm_count_4")
+  norm4           Decimal       @default(0) @map("norm_4")
+  comment         String
+  status          ProductStatus @default(ACTIV)
 
   warehouse   Warehouse? @relation(fields: [warehouseId], references: [id])
   warehouseId String?    @map("warehouse_id")
 
   @@map("product")
+}
+
+enum ProductStatus {
+  ACTIV
+  NOTACTIV
+}
+
+model ServiceArticle {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  artical     Int           @unique
+  description String
+  status      ProductStatus @default(ACTIV)
+
+  @@map("service_article")
+}
+
+model PackageArticle {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  artical     Int           @unique
+  description String
+  status      ProductStatus @default(ACTIV)
+
+  @@map("package_article")
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name      String
+  deliveris DeliveriMetod[]
+
+  @@map("client")
+}
+
+model DeliveriMetod {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  deliveritypes DeliveriType[]
+
+  client   Client? @relation(fields: [clientId], references: [id])
+  clientId String? @map("client_id")
+
+  @@map("delivery_metod")
+}
+
+model DeliveriType {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String
+  description String
+
+  deliveriMetod   DeliveriMetod? @relation(fields: [deliveriMetodId], references: [id])
+  deliveriMetodId String?        @map("deliveri_metod_id")
+
+  @@map("deliveri_type")
 }
