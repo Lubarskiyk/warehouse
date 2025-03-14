@@ -7,18 +7,18 @@ import {
   UnauthorizedException,
   Res,
   HttpStatus,
-  Req,
 } from '@nestjs/common';
 
 import { LoginDto, RegisterDto } from '@auth/dto';
 import { AuthService } from '@auth/auth.service';
 import { Tokens } from '@auth/interfaces';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { Cookie, UserAgent } from '@common/decorators';
+import { Cookie, Public, UserAgent } from '@common/decorators';
 
 const REFRESH_TOKEN = 'refresh_token';
 
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(

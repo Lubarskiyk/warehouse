@@ -13,12 +13,6 @@ import { UserService } from '@user/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  // @ts-ignore
-  createUser(@Body() dto) {
-    return this.userService.save(dto);
-  }
-
   @Get(':idOrEmail')
   findOneUser(@Param('idOrEmail') idOrEmail: string) {
     return this.userService.findOne(idOrEmail);

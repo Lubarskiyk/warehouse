@@ -24,19 +24,19 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const user: User | null = await this.userService
-      .findOne(dto.email)
-      .catch((error) => {
-        this.logger.error(error);
-        return null;
-      });
-    if (user) {
-      throw new ConflictException('User already exists');
-    }
     try {
-      return this.userService.save(dto);
+      const user: User | null = await this.userService.findOne(dto.email);
+
+      if (user) {
+        throw new ConflictException('User already exists');
+      }
+
+      return await this.userService.save(dto);
     } catch (error) {
       this.logger.error(error);
+      if (error instanceof ConflictException) {
+        throw error;
+      }
       return null;
     }
   }
