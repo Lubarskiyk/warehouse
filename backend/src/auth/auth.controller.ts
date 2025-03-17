@@ -7,6 +7,8 @@ import {
   UnauthorizedException,
   Res,
   HttpStatus,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 
 import { LoginDto, RegisterDto } from '@auth/dto';
@@ -15,6 +17,7 @@ import { Tokens } from '@auth/interfaces';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Cookie, Public, UserAgent } from '@common/decorators';
+import { UserResponse } from '@user/responses';
 
 const REFRESH_TOKEN = 'refresh_token';
 
@@ -26,6 +29,7 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('register')
   async register(@Body() dto: RegisterDto) {
     const user = await this.authService.register(dto);
@@ -33,6 +37,7 @@ export class AuthController {
     if (!user) {
       throw new BadRequestException(`register failed ${JSON.stringify(dto)}`);
     }
+    return new UserResponse(user);
   }
 
   @Post('login')
@@ -46,6 +51,24 @@ export class AuthController {
       throw new BadRequestException(`login failed ${JSON.stringify(dto)}`);
     }
     this.setRefreshTokenCookies(tokens, res);
+  }
+
+  @Get('logout')
+  async logout(
+    @Cookie(REFRESH_TOKEN) refreshToken: string,
+    @Res() res: Response,
+  ) {
+    if (!refreshToken) {
+      res.sendStatus(HttpStatus.OK);
+      return;
+    }
+    await this.authService.deleteRefreshToken(refreshToken);
+    res.cookie(REFRESH_TOKEN, '', {
+      httpOnly: true,
+      secure: true,
+      expires: new Date(),
+    });
+    res.sendStatus(HttpStatus.OK);
   }
 
   @Get('refresh-tokens')
