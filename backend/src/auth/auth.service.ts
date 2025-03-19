@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -33,11 +34,13 @@ export class AuthService {
 
       return await this.userService.save(dto);
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(`Register error: ${error.message}`, error.stack);
       if (error instanceof ConflictException) {
         throw error;
       }
-      return null;
+      throw new InternalServerErrorException(
+        'Unexpected error during registration',
+      );
     }
   }
 

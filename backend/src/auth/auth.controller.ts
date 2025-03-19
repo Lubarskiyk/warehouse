@@ -9,6 +9,7 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Logger,
 } from '@nestjs/common';
 
 import { LoginDto, RegisterDto } from '@auth/dto';
@@ -24,6 +25,7 @@ const REFRESH_TOKEN = 'refresh_token';
 @Public()
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
@@ -32,12 +34,13 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('register')
   async register(@Body() dto: RegisterDto) {
-    const user = await this.authService.register(dto);
-
-    if (!user) {
-      throw new BadRequestException(`register failed ${JSON.stringify(dto)}`);
+    try {
+      const user = await this.authService.register(dto);
+      return new UserResponse(user);
+    } catch (error) {
+      this.logger.error(`Failed to register user: ${dto.email}`, error.stack);
+      throw error;
     }
-    return new UserResponse(user);
   }
 
   @Post('login')
