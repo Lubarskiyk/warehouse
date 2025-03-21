@@ -1,12 +1,17 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
 import { Role, User } from '@prisma/client';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { JwtPayload } from '@auth/interfaces';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   save(user: Partial<User>) {
     // @ts-ignore
@@ -22,10 +27,21 @@ export class UserService {
     });
   }
 
-  findOne(idOrEmail: string) {
-    return this.prismaService.user.findFirst({
-      where: { OR: [{ id: idOrEmail }, { email: idOrEmail }] },
-    });
+  async findOne(idOrEmail: string) {
+    const user = await this.cacheManager.get<User>(idOrEmail);
+    if (!user) {
+      console.log('find user');
+      const user = await this.prismaService.user.findFirst({
+        where: { OR: [{ id: idOrEmail }, { email: idOrEmail }] },
+      });
+      if (!user) {
+        return null;
+      }
+      await this.cacheManager.set<User>(idOrEmail, user);
+      return user;
+    }
+
+    return user;
   }
 
   delete(id: string, user: JwtPayload) {
