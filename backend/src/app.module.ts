@@ -5,8 +5,6 @@ import { PrismaModule } from '@prisma/prisma.module';
 import { AuthModule } from '@auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@auth/guargs/jwt-auth.guard';
-import { redisStore } from 'cache-manager-redis-store';
-import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [

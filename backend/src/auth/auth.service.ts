@@ -29,7 +29,7 @@ export class AuthService {
       const user: User | null = await this.userService.findOne(dto.email);
 
       if (user) {
-        throw new ConflictException('User already exists');
+        throw new ConflictException('Use r already exists');
       }
 
       return await this.userService.save(dto);
