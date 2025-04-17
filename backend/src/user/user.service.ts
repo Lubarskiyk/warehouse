@@ -30,7 +30,6 @@ export class UserService {
   async findOne(idOrEmail: string) {
     const user = await this.cacheManager.get<User>(idOrEmail);
     if (!user) {
-      console.log('find user');
       const user = await this.prismaService.user.findFirst({
         where: { OR: [{ id: idOrEmail }, { email: idOrEmail }] },
       });
@@ -42,6 +41,10 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async findAll() {
+    return this.prismaService.user.findMany();
   }
 
   delete(id: string, user: JwtPayload) {

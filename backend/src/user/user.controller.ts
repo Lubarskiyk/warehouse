@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from '@user/user.service';
 import { UserResponse } from '@user/responses';
-import { CurrentUser } from '@common/decorators';
+import { CurrentUser, Public } from '@common/decorators';
 import { JwtPayload } from '@auth/interfaces';
 import {
   ApiBearerAuth,
@@ -60,5 +60,15 @@ export class UserController {
     @CurrentUser() user: JwtPayload,
   ) {
     return this.userService.delete(id, user);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get()
+  @Public()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiOkResponse({ type: UserResponse, isArray: true })
+  async findAllUsers() {
+    const users = await this.userService.findAll();
+    return users.map((user) => new UserResponse(user));
   }
 }
