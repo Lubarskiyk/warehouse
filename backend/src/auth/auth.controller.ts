@@ -28,7 +28,7 @@ import { UserResponse } from '@user/responses';
 
 const REFRESH_TOKEN = 'refresh_token';
 
-@ApiTags('Auth') // Группа "Auth" в Swagger
+@ApiTags('Auth')
 @Public()
 @Controller('auth')
 export class AuthController {
@@ -52,9 +52,12 @@ export class AuthController {
   async register(@Body() dto: RegisterDto) {
     try {
       const user = await this.authService.register(dto);
+      if (!user) {
+        throw new BadRequestException('Не удалось создать пользователя');
+      }
       return new UserResponse(user);
     } catch (error) {
-      this.logger.error(`Failed to register user: ${dto.email}`, error.stack);
+      this.logger.error(`Failed to register user: ${dto.login}`, error.stack);
       throw error;
     }
   }

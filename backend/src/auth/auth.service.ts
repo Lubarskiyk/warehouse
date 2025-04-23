@@ -26,7 +26,7 @@ export class AuthService {
 
   async register(dto: RegisterDto) {
     try {
-      const user: User | null = await this.userService.findOne(dto.email);
+      const user: User | null = await this.userService.findOne(dto.login);
 
       if (user) {
         throw new ConflictException('Use r already exists');
@@ -46,7 +46,7 @@ export class AuthService {
 
   async login(dto: LoginDto, agent: string): Promise<Tokens> {
     const user: User | null = await this.userService
-      .findOne(dto.email)
+      .findOne(dto.login)
       .catch((error) => {
         this.logger.error(error);
         return null;
@@ -84,7 +84,7 @@ export class AuthService {
       'Bearer ' +
       this.jwtService.sign({
         id: user.id,
-        email: user.email,
+        email: user.login,
         roles: user.roles,
         userAgent: agent,
       });

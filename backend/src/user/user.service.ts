@@ -14,29 +14,29 @@ export class UserService {
   ) {}
 
   save(user: Partial<User>) {
-    // @ts-ignore
+    if (!user.password || !user.login) return null;
+
     const hashedPassword = this.hashPassword(user.password);
 
     return this.prismaService.user.create({
       data: {
-        // @ts-ignore
-        email: user.email,
+        login: user.login,
         password: hashedPassword,
         roles: ['USER'],
       },
     });
   }
 
-  async findOne(idOrEmail: string) {
-    const user = await this.cacheManager.get<User>(idOrEmail);
+  async findOne(idOrLogin: string) {
+    const user = await this.cacheManager.get<User>(idOrLogin);
     if (!user) {
       const user = await this.prismaService.user.findFirst({
-        where: { OR: [{ id: idOrEmail }, { email: idOrEmail }] },
+        where: { OR: [{ id: idOrLogin }, { login: idOrLogin }] },
       });
       if (!user) {
         return null;
       }
-      await this.cacheManager.set<User>(idOrEmail, user);
+      await this.cacheManager.set<User>(idOrLogin, user);
       return user;
     }
 

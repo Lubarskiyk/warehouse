@@ -8,15 +8,19 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String?
-  provider  Provider?
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id        String   @id @default(uuid())
+  login     String   @unique
+  password  String
+  name      String?  @default("")
+  surname   String?  @default("")
+  code      String?  @default("")
   roles     Role[]
   Token     Token[]
-  isBlocked Boolean   @default(false) @map("is_blocked")
+  isBlocked Boolean  @default(false) @map("is_blocked")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  offices Office[] @relation("UserOffices")
 
   @@map("users")
 }
@@ -36,6 +40,15 @@ enum Role {
   USER
 }
 
-enum Provider {
-  GOOGLE
+model Office {
+  id      String  @id @default(uuid())
+  name    String
+  address String?
+
+  users User[] @relation("UserOffices")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("offices")
 }

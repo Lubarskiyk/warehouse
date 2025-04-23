@@ -1,6 +1,5 @@
 "use client"
-import { DataTable } from "@/components/data-table/DataTable";
-import { Button } from '@/components/ui/button';
+
 import UserTable from '@/components/user/UserTable';
 
 export default function Users() {
