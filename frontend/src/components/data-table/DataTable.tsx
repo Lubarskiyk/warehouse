@@ -22,19 +22,22 @@ import {
 } from "@/components/ui/table"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useState, ReactNode } from "react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   searchKey?: string
+  search?: ReactNode
+  onAddClick?: () => void
 }
 
 export function DataTable<TData, TValue>({
                                            columns,
                                            data,
                                            searchKey,
+                                           search,
+                                           onAddClick,
                                          }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -56,18 +59,16 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {searchKey && (
-        <div className="flex items-center py-4">
-          <Input
-            placeholder="Поиск..."
-            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
+      {/* Добавляем кастомный поиск и кнопку (если переданы) */}
+      {(search || onAddClick) && (
+        <div className="flex items-center py-4 justify-between">
+          <div>{search}</div>
+          {onAddClick && (
+            <Button onClick={onAddClick}>Добавить</Button>
+          )}
         </div>
       )}
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -112,6 +113,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"

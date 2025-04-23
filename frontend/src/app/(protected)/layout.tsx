@@ -57,8 +57,9 @@ export default function ProtectedLayout({
               </BreadcrumbList>
             </Breadcrumb>
           </header>
+          <main className="p-4">
           {children}
-
+          </main>
         </SidebarInset>
       </SidebarProvider>
   );
