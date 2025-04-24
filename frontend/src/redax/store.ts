@@ -2,10 +2,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "./auth/slice";
+import modalReducer from "./togleModal/slice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    modal: modalReducer
   },
 });
 

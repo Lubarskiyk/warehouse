@@ -23,7 +23,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             asChild
             className="data-[slot=sidebar-menu-button]:!p-1.5"
           >
-            <a href="/" className="flex flex-col h-full items-start">
+            <a href="/frontend/public" className="flex flex-col h-full items-start">
               <span className="text-base font-semibold">WinkHaus</span>
               <span className="text-base font-semibold">Warehouse</span>
             </a>

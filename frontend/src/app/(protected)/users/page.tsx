@@ -1,6 +1,6 @@
 "use client"
 
-import UserTable from '@/components/user/UserTable';
+import UserTable from '@/components/User/UserTable';
 
 export default function Users() {
 

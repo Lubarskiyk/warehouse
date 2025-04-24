@@ -29,11 +29,11 @@ export class UserController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':idOrEmail')
-  @ApiOperation({ summary: 'Find user by ID or email' })
+  @ApiOperation({ summary: 'Find User by ID or email' })
   @ApiParam({
     name: 'idOrEmail',
     type: String,
-    description: 'UUID or email of the user',
+    description: 'UUID or email of the User',
   })
   @ApiOkResponse({ type: UserResponse })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -47,11 +47,11 @@ export class UserController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete user by ID' })
+  @ApiOperation({ summary: 'Delete User by ID' })
   @ApiParam({
     name: 'id',
     type: String,
-    description: 'UUID of the user',
+    description: 'UUID of the User',
   })
   @ApiOkResponse({ description: 'User successfully deleted' })
   @ApiNotFoundResponse({ description: 'User not found' })

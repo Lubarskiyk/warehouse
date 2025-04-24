@@ -1,4 +1,4 @@
-import Products from '@/components/product/ProductsTable';
+import Products from '@/components/Product/ProductsTable';
 
 export default function  Materials  () {
   return (

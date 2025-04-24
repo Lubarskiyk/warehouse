@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
-import { DataTable } from '@/components/data-table/DataTable'
-import { TableToolbar } from '@/components/data-table/TableToolbar'
+import { DataTable } from '@/components/DataTable/DataTable'
+import { TableToolbar } from '@/components/DataTable/TableToolbar'
 
 export default function Products() {
   const data = [
