@@ -3,6 +3,7 @@ import { loginUserApi } from "@/api/tanstackReactQuery/auth/requests";
 import { ILoginCredentials } from "@/types";
 import { useAppDispatch } from '@/redax/reduxHooks';
 import { authenticated } from '@/redax/auth/slice';
+import { AxiosError } from 'axios';
 
 export function useAuth() {
   const dispatch = useAppDispatch();
@@ -13,7 +14,8 @@ export function useAuth() {
       dispatch(authenticated(true))
     },
     onError: (error) => {
-      console.error("Login failed:", error);
+      const axiosError = error as AxiosError<{ message?: string, statusCode?:number }>;
+      console.error("Login failed:", axiosError.response?.data?.statusCode);
     },
   });
 

@@ -1,36 +1,39 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { ComponentProps } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/api/tanstackReactQuery/auth/mutations";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SignInSchema } from "@/components/LogIn/validationShema";
+import { ILoginFormInputs } from "@/components/LogIn/loginTypes";
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ComponentProps } from "react";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { useAuth } from '@/api/tanstackReactQuery/auth/mutations';
-
-
-type LoginFormInputs = {
-  login: string;
-  password: string;
-};
+  Input,
+  Label,
+} from "@/components/ui";
 
 export function LoginForm({ className, ...props }: ComponentProps<"div">) {
   const router = useRouter();
-  const {loginMutation} = useAuth();
+  const { loginMutation } = useAuth();
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormInputs>();
+  } = useForm<ILoginFormInputs>({
+    defaultValues: {
+      login: "",
+      password: "",
+    },
+    resolver: yupResolver(SignInSchema),
+  });
 
-  const onSubmit = (data:LoginFormInputs) => {
+  const onSubmit = (data: ILoginFormInputs) => {
     loginMutation.mutate(data);
     router.push("/dashboard");
   };
@@ -41,21 +44,28 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your login below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-6"
+            noValidate
           >
             <div className="grid gap-3">
-              <Label htmlFor="login">Email</Label>
-              <Input
-                id="login"
-                type="text"
-                placeholder="login"
-                {...register("login", { required: "Email is required" })}
+              <Label htmlFor="login">login</Label>
+              <Controller
+                name="login"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="login"
+                    type="text"
+                    placeholder="login"
+                  />
+                )}
               />
               {errors.login && (
                 <p className="text-sm text-red-500">{errors.login.message}</p>
@@ -63,10 +73,17 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
             </div>
             <div className="grid gap-3">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password", { required: "Password is required" })}
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="password"
+                    type="password"
+                    placeholder="password"
+                  />
+                )}
               />
               {errors.password && (
                 <p className="text-sm text-red-500">
@@ -74,6 +91,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
                 </p>
               )}
             </div>
+
             <Button type="submit" className="w-full">
               Login
             </Button>
