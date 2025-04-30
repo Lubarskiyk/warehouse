@@ -13,7 +13,7 @@ export class UserService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  save(user: Partial<User>) {
+  async createUser(user: Partial<User>) {
     if (!user.password || !user.login) return null;
 
     const hashedPassword = this.hashPassword(user.password);

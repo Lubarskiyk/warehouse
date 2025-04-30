@@ -11,27 +11,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ComponentProps } from "react";
-import { useAppDispatch } from "@/redax/reduxHooks";
-import { logIn } from "@/redax/auth/slice";
 import { useForm } from "react-hook-form";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { useAuth } from '@/api/tanstackReactQuery/auth/mutations';
+
 
 type LoginFormInputs = {
-  email: string;
+  login: string;
   password: string;
 };
 
 export function LoginForm({ className, ...props }: ComponentProps<"div">) {
-  const dispatch = useAppDispatch();
   const router = useRouter();
+  const {loginMutation} = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    dispatch(logIn());
+  const onSubmit = (data:LoginFormInputs) => {
+    loginMutation.mutate(data);
     router.push("/dashboard");
   };
 
@@ -45,17 +45,20 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-6"
+          >
             <div className="grid gap-3">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="login">Email</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                {...register("email", { required: "Email is required" })}
+                id="login"
+                type="text"
+                placeholder="login"
+                {...register("login", { required: "Email is required" })}
               />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+              {errors.login && (
+                <p className="text-sm text-red-500">{errors.login.message}</p>
               )}
             </div>
             <div className="grid gap-3">
@@ -66,7 +69,9 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
                 {...register("password", { required: "Password is required" })}
               />
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
               )}
             </div>
             <Button type="submit" className="w-full">

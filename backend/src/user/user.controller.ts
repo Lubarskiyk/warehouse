@@ -28,7 +28,19 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Get(':idOrEmail')
+  @Get('/current')
+  @ApiOperation({ summary: 'Получить текущего пользователя' })
+  @ApiOkResponse({ type: UserResponse })
+  @ApiNotFoundResponse({ description: 'Пользователь не найден' })
+  async getCurrentUser(@CurrentUser() user: JwtPayload) {
+    const currentUser = await this.userService.findOne(user.id);
+    if (!currentUser) {
+      throw new NotFoundException('Текущий пользователь не найден');
+    }
+    return new UserResponse(currentUser);
+  }
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get('/id/:idOrEmail')
   @ApiOperation({ summary: 'Find User by ID or email' })
   @ApiParam({
     name: 'idOrEmail',
@@ -46,7 +58,7 @@ export class UserController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Delete(':id')
+  @Delete('/del/:id')
   @ApiOperation({ summary: 'Delete User by ID' })
   @ApiParam({
     name: 'id',

@@ -32,7 +32,7 @@ export class AuthService {
         throw new ConflictException('Use r already exists');
       }
 
-      return await this.userService.save(dto);
+      return await this.userService.createUser(dto);
     } catch (error) {
       this.logger.error(`Register error: ${error.message}`, error.stack);
       if (error instanceof ConflictException) {
@@ -44,7 +44,7 @@ export class AuthService {
     }
   }
 
-  async login(dto: LoginDto, agent: string): Promise<Tokens> {
+  async login(dto: LoginDto): Promise<Tokens> {
     const user: User | null = await this.userService
       .findOne(dto.login)
       .catch((error) => {
@@ -55,10 +55,10 @@ export class AuthService {
     if (!user || !user.password || !compareSync(dto.password, user.password)) {
       throw new UnauthorizedException('login or password failed');
     }
-    return this.generateTokens(user, agent);
+    return this.generateTokens(user);
   }
 
-  async refreshTokens(refreshToken: string, agent: string): Promise<Tokens> {
+  async refreshTokens(refreshToken: string): Promise<Tokens> {
     const token = await this.prismaService.token.findUnique({
       where: { token: refreshToken },
     });
@@ -76,30 +76,25 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    return this.generateTokens(user, agent);
+    return this.generateTokens(user);
   }
 
-  private async generateTokens(user: User, agent: string): Promise<Tokens> {
-    const accessToken =
-      'Bearer ' +
-      this.jwtService.sign({
-        id: user.id,
-        email: user.login,
-        roles: user.roles,
-        userAgent: agent,
-      });
+  private async generateTokens(user: User): Promise<Tokens> {
+    const accessToken = this.jwtService.sign({
+      id: user.id,
+      login: user.login,
+      roles: user.roles,
+    });
 
-    const refreshToken = await this.getRefreshToken(user.id, agent);
+    const refreshToken = await this.getRefreshToken(user.id);
 
     return { accessToken, refreshToken };
   }
 
-  private async getRefreshToken(userId: string, agent: string): Promise<Token> {
+  private async getRefreshToken(userId: string): Promise<Token> {
     const token = await this.prismaService.token.findFirst({
       where: {
         userId: userId,
-        // @ts-ignore
-        userAgent: agent,
       },
     });
 
@@ -117,7 +112,6 @@ export class AuthService {
           token: v4(),
           exp: add(new Date(), { days: 1 }),
           userId,
-          userAgent: agent,
         } as Prisma.TokenUncheckedCreateInput,
       });
     }

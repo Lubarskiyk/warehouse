@@ -23,7 +23,7 @@ import { AuthService } from '@auth/auth.service';
 import { Tokens } from '@auth/interfaces';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { Cookie, Public, UserAgent } from '@common/decorators';
+import { Cookie, Public } from '@common/decorators';
 import { UserResponse } from '@user/responses';
 
 const REFRESH_TOKEN = 'refresh_token';
@@ -69,12 +69,8 @@ export class AuthController {
     description: 'Успешный вход. Access token в ответе. Refresh в куках',
   })
   @ApiResponse({ status: 400, description: 'Ошибка входа' })
-  async login(
-    @Body() dto: LoginDto,
-    @Res() res: Response,
-    @UserAgent() agent: string,
-  ) {
-    const tokens = await this.authService.login(dto, agent);
+  async login(@Body() dto: LoginDto, @Res() res: Response) {
+    const tokens = await this.authService.login(dto);
     if (!tokens) {
       throw new BadRequestException(`login failed ${JSON.stringify(dto)}`);
     }
@@ -102,7 +98,7 @@ export class AuthController {
   }
 
   @Get('refresh-tokens')
-  @ApiCookieAuth() // Swagger будет знать, что запрос использует куки
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Обновление access и refresh токенов' })
   @ApiResponse({ status: 201, description: 'Новые токены выданы' })
   @ApiResponse({
@@ -112,13 +108,12 @@ export class AuthController {
   async refreshTokens(
     @Cookie(REFRESH_TOKEN) refreshToken: string,
     @Res() res: Response,
-    @UserAgent() agent: string,
   ) {
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
 
-    const tokens = await this.authService.refreshTokens(refreshToken, agent);
+    const tokens = await this.authService.refreshTokens(refreshToken);
     if (!tokens) {
       throw new UnauthorizedException();
     }
