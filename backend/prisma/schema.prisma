@@ -42,6 +42,9 @@ enum Role {
 model Office {
   id      String  @id @default(uuid())
   name    String
+  code    String
+  city    String?
+  phone   String?
   address String?
 
   users User[] @relation("UserOffices")

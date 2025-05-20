@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { ComponentProps } from "react";
+import { ComponentProps, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/api/tanstackReactQuery/auth/mutations";
@@ -35,8 +35,12 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
 
   const onSubmit = (data: ILoginFormInputs) => {
     loginMutation.mutate(data);
-    router.push("/dashboard");
   };
+  useEffect(() => {
+    if (loginMutation.isSuccess) {
+      router.push("/dashboard");
+    }
+  }, [loginMutation.isSuccess, router]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

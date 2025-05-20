@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   Logger,
+  GoneException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -110,12 +111,12 @@ export class AuthController {
     @Res() res: Response,
   ) {
     if (!refreshToken) {
-      throw new UnauthorizedException();
+      throw new GoneException('Refresh token is no longer valid');
     }
 
     const tokens = await this.authService.refreshTokens(refreshToken);
     if (!tokens) {
-      throw new UnauthorizedException();
+      throw new GoneException('Refresh token is no longer valid');
     }
 
     this.setRefreshTokenCookies(tokens, res);

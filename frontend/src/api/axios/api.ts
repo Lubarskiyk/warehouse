@@ -1,13 +1,29 @@
-import axios from 'axios';
-import store, { RootState } from '@/redax/store';
+import axios from "axios";
+import store, { RootState } from "@/redax/store";
+import {
+  logoutUserApi,
+  refreshTokensApi,
+} from "@/api/tanstackReactQuery/auth/requests";
+import { authenticated } from "@/redax/auth/slice";
+import Router from "next/router";
 
-const API_BASE_URL = 'http://localhost:4000';
+const API_BASE_URL = "http://localhost:4000";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
 });
 
+const handleLogout = async () => {
+  try {
+    await logoutUserApi();
+    localStorage.removeItem("accessToken");
+    store.dispatch(authenticated(false));
+    Router.replace("/");
+  } catch (error) {
+    console.error("Ошибка при выходе:", error);
+  }
+};
 
 export const setupTokenInterceptor = (getState: () => RootState) => {
   api.interceptors.request.use((config) => {
@@ -23,25 +39,24 @@ export const setupTokenInterceptor = (getState: () => RootState) => {
     async (error) => {
       const originalRequest = error.config;
       const isAuthenticated = getState().auth.isAuthenticated;
+
       if (!isAuthenticated) return Promise.reject(error);
+
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
-          const response = await store.dispatch(refreshAccessToken()).unwrap();
-
-          localStorage.setItem("accessToken", response.access_token);
-          originalRequest.headers.Authorization = `Bearer ${response.access_token}`;
+          const response = await refreshTokensApi();
+          localStorage.setItem("accessToken", response.data.accessToken);
+          originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
           return api(originalRequest);
         } catch (err) {
-          store.dispatch(logOut());
-          Router.push("/login");
+          await handleLogout();
           return Promise.reject(err);
         }
       }
 
       if (error.response?.status === 410) {
-        store.dispatch(logOut());
-        Router.push("/login");
+        await handleLogout();
         return Promise.reject(error);
       }
 
@@ -49,7 +64,3 @@ export const setupTokenInterceptor = (getState: () => RootState) => {
     },
   );
 };
-function refreshAccessToken(): any {
-    throw new Error('Function not implemented.');
-}
-

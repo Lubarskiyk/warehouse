@@ -1,30 +1,34 @@
-
-import { useState } from "react"
-import { DataTable } from '@/components/DataTable/DataTable';
-import { TableToolbar } from '@/components/DataTable/TableToolbar';
-
-
+import { useState } from "react";
+import { DataTable } from "@/components/DataTable/DataTable";
+import { TableToolbar } from "@/components/DataTable/TableToolbar";
+import { openModal } from "@/redax/togleModal/slice";
+import { useAppDispatch } from '@/redax/reduxHooks';
 
 export default function UserTable() {
   const data = [
-    { id: 1, name: 'Иван Иванов', email: 'ivan@example.com', age: 28, blok: 1 },
-    { id: 2, name: 'Мария Петрова', email: 'maria@example.com', age: 34, blok: 1 },
-
-  ]
+    { id: 1, name: "Иван Иванов", email: "ivan@example.com", age: 28, blok: 1 },
+    {
+      id: 2,
+      name: "Мария Петрова",
+      email: "maria@example.com",
+      age: 34,
+      blok: 1,
+    },
+  ];
 
   const columns = [
-    { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'name', header: 'Имя' },
-    { accessorKey: 'email', header: 'Email' },
-    { accessorKey: 'age', header: 'Возраст' },
-    { accessorKey: 'blok', header: 'blok' },
-  ]
+    { accessorKey: "id", header: "ID" },
+    { accessorKey: "name", header: "Имя" },
+    { accessorKey: "email", header: "Email" },
+    { accessorKey: "age", header: "Возраст" },
+    { accessorKey: "blok", header: "blok" },
+  ];
 
-  const [searchValue, setSearchValue] = useState("")
-
+  const [searchValue, setSearchValue] = useState("");
+  const dispatch = useAppDispatch();
   const filteredUsers = data.filter((user) =>
-    user.name.toLowerCase().includes(searchValue.toLowerCase())
-  )
+    user.name.toLowerCase().includes(searchValue.toLowerCase()),
+  );
 
   return (
     <>
@@ -38,10 +42,10 @@ export default function UserTable() {
             searchType="name"
             searchValue={searchValue}
             onSearchChange={(e) => setSearchValue(e)}
-            onAddClick={() => alert("Добавить пользователя")}
+            onAddClick={() => dispatch(openModal("isUserModal"))}
           />
         }
       />
     </>
-  )
+  );
 }

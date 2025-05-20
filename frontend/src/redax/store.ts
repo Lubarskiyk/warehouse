@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "./auth/slice";
 import modalReducer from "./togleModal/slice";
+import { setupTokenInterceptor } from '@/api/axios/api';
 
 const store = configureStore({
   reducer: {
@@ -10,7 +11,7 @@ const store = configureStore({
     modal: modalReducer
   },
 });
-
+setupTokenInterceptor(store.getState)
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

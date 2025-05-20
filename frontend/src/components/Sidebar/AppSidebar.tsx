@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/sidebar";
 import { sidebarMenuData } from "@/constans/sidebarItem";
 import { ComponentProps } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
+  const router = useRouter();
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -24,8 +26,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             className="data-[slot=sidebar-menu-button]:!p-1.5"
           >
             <a href="/frontend/public" className="flex flex-col h-full items-start">
-              <span className="text-base font-semibold">WinkHaus</span>
-              <span className="text-base font-semibold">Warehouse</span>
+              <span className="text-base font-semibold ">WinkHaus</span>
+              <span className="text-base font-semibold ">Warehouse</span>
             </a>
           </SidebarMenuButton>
 
@@ -38,8 +40,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                    <SidebarMenuButton asChild isActive={item.isActive} onClick={() => router.push(item.url)}>
+                      <p className="">{item.title}</p>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

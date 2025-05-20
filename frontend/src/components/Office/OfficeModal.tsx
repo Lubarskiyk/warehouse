@@ -1,5 +1,5 @@
 import { Dialog } from "@radix-ui/react-dialog";
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog';
+import { DialogContent, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import { useAppDispatch, useAppSelector } from '@/redax/reduxHooks';
 import { selectIsOfficeModal} from '@/redax/togleModal/selectors';
 import { closeModal } from '@/redax/togleModal/slice';
@@ -17,10 +17,7 @@ export default function OfficeModal() {
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>UserForm</DialogTitle>
-          <DialogDescription>
-            UserForm
-          </DialogDescription>
+          <DialogTitle>Додати Офіс</DialogTitle>
         </DialogHeader>
         <OfficeForm/>
       </DialogContent>

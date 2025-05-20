@@ -24,6 +24,7 @@ export default function ProtectedLayout({
 }>) {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const router = useRouter();
+  console.log(isAuthenticated);
   useEffect(() => {
     if (!isAuthenticated) {
       router.replace("/");
