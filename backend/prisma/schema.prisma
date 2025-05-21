@@ -20,7 +20,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  offices Office[] @relation("UserOffices")
+  offices       Office[]        @relation("UserOffices")
+  UserOperation UserOperation[]
 
   @@map("users")
 }
@@ -49,8 +50,67 @@ model Office {
 
   users User[] @relation("UserOffices")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  MaterialInOffice MaterialInOffice[]
 
   @@map("offices")
+}
+
+model Operation {
+  code        String          @id
+  name        String
+  coefficient Float           @default(1.0)
+  comment     String?
+  createdAt   DateTime        @default(now()) @map("created_at")
+  userActions UserOperation[]
+
+  @@map("operations")
+}
+
+model UserOperation {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  operation     Operation @relation(fields: [operationCode], references: [code])
+  operationCode String
+  date          DateTime
+  quantity      Float     @default(1)
+  comment       String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("user_operations")
+}
+
+model Material {
+  number             String             @id
+  description        String
+  artType            Int
+  count1             Int                @default(0)
+  norma1             Float              @default(0)
+  count2             Int                @default(0)
+  norma2             Float              @default(0)
+  count3             Int                @default(0)
+  norma3             Float              @default(0)
+  count4             Int                @default(0)
+  norma4             Float              @default(0)
+  comment            String?
+  createdAt          DateTime           @default(now()) @map("created_at")
+  materialsInOffices MaterialInOffice[]
+
+  @@map("materials")
+}
+
+model MaterialInOffice {
+  id             String   @id @default(uuid())
+  material       Material @relation(fields: [materialNumber], references: [number])
+  materialNumber String
+  office         Office   @relation(fields: [officeId], references: [id])
+  officeId       String
+  vaultPlace     String?
+  comment        String?
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@unique([materialNumber, officeId])
+  @@map("materials_in_offices")
 }
