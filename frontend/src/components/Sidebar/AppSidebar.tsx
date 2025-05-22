@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { sidebarMenuData } from "@/constans/sidebarItem";
+import { sidebarMenuData } from "@/components/Sidebar/sidebarItem";
 import { ComponentProps } from 'react';
 import { useRouter } from 'next/navigation';
 

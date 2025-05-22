@@ -3,12 +3,6 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
   Separator,
 } from "@/components/ui";
 import { AppSidebar } from "@/components/Sidebar/AppSidebar";
@@ -24,7 +18,6 @@ export default function ProtectedLayout({
 }>) {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const router = useRouter();
-  console.log(isAuthenticated);
   useEffect(() => {
     if (!isAuthenticated) {
       router.replace("/");
@@ -45,19 +38,7 @@ export default function ProtectedLayout({
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Building Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <p>Привет сюда надо добавить </p>
         </header>
         <main className="p-4">{children}</main>
       </SidebarInset>

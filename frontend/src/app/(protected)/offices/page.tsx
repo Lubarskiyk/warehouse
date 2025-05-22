@@ -1,12 +1,13 @@
-"use client"
+"use client";
 
-import OfficeTable from '@/components/Office/OfficeTable';
+import OfficeContent from "@/components/Office/OfficeContent";
+import OfficeModal from "@/components/Office/OfficeModal";
 
 export default function Offices() {
-
   return (
     <>
-         <OfficeTable/>
+      <OfficeContent />
+      <OfficeModal />
     </>
   );
 }

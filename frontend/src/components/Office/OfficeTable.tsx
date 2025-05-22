@@ -1,47 +1,89 @@
+"use client";
 
-import { useState } from "react"
-import { DataTable } from '@/components/DataTable/DataTable';
-import { TableToolbar } from '@/components/DataTable/TableToolbar';
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
 
-export default function OfficeTable() {
-  const data = [
-    { id: 1, name: 'Иван Иванов', email: 'ivan@example.com', age: 28, blok: 1 },
-    { id: 2, name: 'Мария Петрова', email: 'maria@example.com', age: 34, blok: 1 },
+export function OfficeTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
 
-  ]
-
-  const columns = [
-    { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'name', header: 'Имя' },
-    { accessorKey: 'email', header: 'Email' },
-    { accessorKey: 'age', header: 'Возраст' },
-    { accessorKey: 'blok', header: 'blok' },
-  ]
-
-  const [searchValue, setSearchValue] = useState("")
-
-  const filteredUsers = data.filter((user) =>
-    user.name.toLowerCase().includes(searchValue.toLowerCase())
-  )
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
-    <>
-      <h1>Пользователи</h1>
-      <DataTable
-        columns={columns}
-        data={filteredUsers}
-        searchKey="name"
-        search={
-          <TableToolbar
-            searchType="name"
-            searchValue={searchValue}
-            onSearchChange={(e) => setSearchValue(e)}
-            onAddClick={() => alert("Добавить офис")}
-          />
-        }
-      />
-    </>
-  )
+    <div>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="hover:bg-inherit bg-muted/50 ">
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id} className="px-4 border-l-1">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="px-4 border-l-1">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Нет данных
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
 }

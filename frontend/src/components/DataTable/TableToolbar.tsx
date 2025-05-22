@@ -1,37 +1,37 @@
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { FC } from 'react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { FC } from "react";
 
 interface TableToolbarProps {
-  searchType: 'name' | 'multi'
-  searchValue: string
-  onSearchChange: (value: string) => void
-  onAddClick?: () => void
-  radioOptions?: { label: string, value: string }[]
-  radioValue?: string
-  onRadioChange?: (value: string) => void
+  searchType: "name" | "multi";
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  onAddClick?: () => void;
+  radioOptions?: { label: string; value: string }[];
+  radioValue?: string;
+  onRadioChange?: (value: string) => void;
 }
 
 export const TableToolbar: FC<TableToolbarProps> = ({
-                                                            searchType,
-                                                            searchValue,
-                                                            onSearchChange,
-                                                            onAddClick,
-                                                            radioOptions,
-                                                            radioValue,
-                                                            onRadioChange,
-                                                          }) => {
+  searchType,
+  searchValue,
+  onSearchChange,
+  onAddClick,
+  radioOptions,
+  radioValue,
+  onRadioChange,
+}) => {
   return (
     <div className="flex items-center py-4 justify-between flex-wrap gap-4">
-      {searchType === 'name' ? (
+      {searchType === "name" ? (
         <Input
           placeholder="Поиск по имени..."
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
           className="max-w-sm"
         />
-      ) : searchType === 'multi' ? (
+      ) : searchType === "multi" ? (
         <div className="flex items-center gap-4 flex-wrap">
           <RadioGroup
             value={radioValue}
@@ -56,5 +56,5 @@ export const TableToolbar: FC<TableToolbarProps> = ({
 
       {onAddClick && <Button onClick={onAddClick}>Добавить</Button>}
     </div>
-  )
-}
+  );
+};
