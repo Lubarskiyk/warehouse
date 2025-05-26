@@ -32,7 +32,6 @@ export default function OfficeForm() {
 
   const onSubmit = (data: IOfficeFormInputsData) => {
     createOffice.mutate(data);
-    console.log(data);
   };
 
   return (
@@ -71,7 +70,7 @@ export default function OfficeForm() {
         type="submit"
         className="mt-4 self-end bg-blue-600 text-white px-4 py-2 rounded"
       >
-        Сохранить
+        Зберегти
       </button>
     </form>
   );

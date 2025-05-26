@@ -13,7 +13,7 @@ export function useOfficeMutation() {
       alert(`error", ${error.message}`);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["office"] });
+      queryClient.invalidateQueries({ queryKey: ["offices"] });
     },
   });
 

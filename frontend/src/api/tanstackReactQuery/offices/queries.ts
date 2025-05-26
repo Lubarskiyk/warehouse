@@ -1,10 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchOfficeAll } from '@/api/tanstackReactQuery/offices/requests';
+import { useQuery } from "@tanstack/react-query";
+import { fetchOfficeAll, fetchOfficeById } from '@/api/tanstackReactQuery/offices/requests';
 
-export const useOffice = () => {
+
+export const useOffices = () => {
   return useQuery({
-    queryKey: ["office"],
+    queryKey: ["offices"],
     queryFn: fetchOfficeAll,
   });
 };
 
+
+export const useOffice = (officeId:string) => {
+  return useQuery({
+    queryKey: ["offices", officeId],
+    queryFn: () => fetchOfficeById(officeId),
+    enabled: !!officeId,
+  });
+};
