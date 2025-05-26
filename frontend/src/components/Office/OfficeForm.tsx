@@ -11,6 +11,7 @@ import { officeSchema } from "@/components/Office/validationOfficeShema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OFFICE_INPUT } from "@/components/Office/constant";
+import { useOfficeMutation } from '@/api/tanstackReactQuery/offices/mutations';
 
 export default function OfficeForm() {
   const {
@@ -27,8 +28,10 @@ export default function OfficeForm() {
     ),
     resolver: yupResolver(officeSchema),
   });
+  const { createOffice } = useOfficeMutation();
 
   const onSubmit = (data: IOfficeFormInputsData) => {
+    createOffice.mutate(data);
     console.log(data);
   };
 
@@ -53,7 +56,7 @@ export default function OfficeForm() {
                   {...field}
                   id={item.id}
                   type={item.type}
-                  placeholder={item.title|| ""}
+                  placeholder={item.title || ""}
                 />
               )}
             />

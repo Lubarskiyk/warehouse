@@ -8,10 +8,3 @@ export const useOffice = () => {
   });
 };
 
-// export const useInvalidateProfile = () => {
-//   const queryClient = useQueryClient();
-//
-//   return () => {
-//     queryClient.invalidateQueries({ queryKey: ["profile"] });
-//   };
-// };

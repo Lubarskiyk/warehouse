@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class OfficeDto {
   @ApiProperty({ example: 'Львів склад', description: 'Назва офісу' })
@@ -36,3 +36,5 @@ export class OfficeDto {
   @IsString()
   address?: string;
 }
+
+export class PartialOfficeDto extends PartialType(OfficeDto) {}

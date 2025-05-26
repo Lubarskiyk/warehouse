@@ -7,3 +7,10 @@ export class GetOfficeParamDto {
   @IsNotEmpty()
   code: string;
 }
+
+export class GetOfficeParamIdDto {
+  @ApiProperty({ example: 'UUID', description: 'Id офісу' })
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+}
