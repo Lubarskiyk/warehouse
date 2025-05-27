@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 const jwtModuleOptions = (config: ConfigService): JwtModuleOptions => ({
   secret: config.get('JWT_SECRET'),
   signOptions: {
-    expiresIn: config.get('JWT_EXPIRE', '5m'),
+    expiresIn: config.get('JWT_EXPIRE', '10m'),
   },
 });
 

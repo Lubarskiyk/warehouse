@@ -7,26 +7,28 @@ import {
 } from "@/components/ui";
 import { AppSidebar } from "@/components/Sidebar/AppSidebar";
 import { ReactNode, useEffect } from "react";
-import { useAppSelector } from "@/redax/reduxHooks";
-import { selectIsAuthenticated } from "@/redax/auth/selectors";
+import { useAppDispatch } from "@/redax/reduxHooks";
+
 import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/api/tanstackReactQuery/users/queries";
+import { authenticated } from "@/redax/auth/slice";
+import HeaderContent from "@/components/Header/HeaderContent";
 
 export default function ProtectedLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const router = useRouter();
+  const { isError } = useCurrentUser();
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isError) {
       router.replace("/");
     }
-  }, [isAuthenticated, router]);
-
-  if (!isAuthenticated) {
-    return <div className="p-6">Loading...</div>;
-  }
+    dispatch(authenticated(true));
+  }, [isError, router, dispatch]);
 
   return (
     <SidebarProvider>
@@ -38,7 +40,7 @@ export default function ProtectedLayout({
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <p>Привет сюда надо добавить </p>
+          <HeaderContent />
         </header>
         <main className="p-4">{children}</main>
       </SidebarInset>

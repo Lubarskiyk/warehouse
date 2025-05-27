@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   loginUserApi,
   logoutUserApi,
@@ -8,8 +8,10 @@ import { useAppDispatch } from "@/redax/reduxHooks";
 import { authenticated } from "@/redax/auth/slice";
 import { AxiosError } from "axios";
 
+
 export function useAuth() {
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: (credentials: ILoginCredentials) => loginUserApi(credentials),
@@ -31,6 +33,13 @@ export function useAuth() {
     onSuccess: () => {
       localStorage.removeItem("accessToken");
       dispatch(authenticated(false));
+
+    },
+    onError: (error) => {
+      console.error("Logout failed:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });
 

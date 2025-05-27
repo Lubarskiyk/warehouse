@@ -11,5 +11,4 @@ export interface IOfficeFormInputs {
   id: keyof IOfficeFormInputsData;
   type: string;
   defaultValue: string;
-
 }

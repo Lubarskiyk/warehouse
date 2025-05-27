@@ -20,7 +20,6 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-
           <SidebarMenuButton
             asChild
             className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -40,7 +39,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive} onClick={() => router.push(item.url)}>
+                    <SidebarMenuButton className='cursor-pointer' asChild isActive={item.isActive} onClick={() => router.push(item.url)}>
                       <p className="">{item.title}</p>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
